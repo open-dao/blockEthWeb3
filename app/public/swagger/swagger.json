@@ -1,0 +1,1821 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a sample server Petstore server.  You can find out more about     Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).      For this sample, you can use the api key `special-key` to test the authorization     filters.",
+    "version": "1.0.0",
+    "title": "Swagger Petstore",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "192.168.10.112:7001/",
+  "basePath": "",
+  "tags": [
+    {
+      "name": "Account",
+      "description": "Everything about your Account",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "utils",
+      "description": "some utils methods"
+    },
+    {
+      "name": "Transaction",
+      "description": "some Transaction methods"
+    },
+    {
+      "name": "Block",
+      "description": "some Block methods"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/index": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Read Me",
+        "description": "所有的返回需要判断data.head.ret 0 成功 其他都是失败,返回结构看文档最下面的Out model<br>所有的合约代币的单位都同ETH的一样详见：`https://www.jianshu.com/p/b56552b1d1a0`,所以的转账的单位都是wei，所有转账的时候必须进行单位换算，显示的时候在换算成ETH,例如你需要转账1个代币的时候需要传1000000000000000000<br>",
+        "operationId": "loginUser",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            },
+            "headers": {
+              "X-Rate-Limit": {
+                "type": "integer",
+                "format": "int32",
+                "description": "calls per hour allowed by the user"
+              },
+              "X-Expires-After": {
+                "type": "string",
+                "format": "date-time",
+                "description": "date in UTC when token expires"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+      }
+    },
+    "/account/newAccount": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "method": "POST",
+        "summary": "Creates a new account",
+        "description": "Notice do not forget your password , if forget it no one can get it back",
+        "operationId": "newAccount",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Pet object that needs to be added to the store",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/newAccountInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/newAccountOutput"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/account/getBalance": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get the balance of an address at a given block.",
+        "description": "Get the balance of an address at a given block.",
+        "operationId": "getBalance",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Pet object that needs to be added to the store",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/getBalanceInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/getBalanceOutput"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/account/getContractBalance": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get the balance of an address use contract name",
+        "description": "Get the balance of an address use contract name",
+        "operationId": "getContractBalance",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "address name not null",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/getContractBalanceInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/getContractBalanceOutput"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/account/sendSysTransaction": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "从合约账户发送代币给某个账户",
+        "description": "从合约账户发送代币给某个账户",
+        "operationId": "getContractBalance",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "address name not null",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sendSysTransactionInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/sendSysTransactionOutput"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/account/sendTransaction": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "从一个账户发送给另外一个账户",
+        "description": "从一个账户发送给另外一个账户",
+        "operationId": "sendTransaction",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "name not null",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sendTransactionInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/sendTransactionOutput"
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/utils/towei": {
+      "post": {
+        "tags": [
+          "utils"
+        ],
+        "summary": "将给定的以太金额转换为以wei为单位的数值。",
+        "description": "将给定的以太金额转换为以wei为单位的数值。",
+        "operationId": "placeOrder",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "wei是最小的以太单位，应当总是使用wei进行计算，仅在需要显示 时进行转换",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/fromWeiInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/fromWeiOutput"
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/utils/fromwei": {
+      "post": {
+        "tags": [
+          "utils"
+        ],
+        "summary": "将给定的以wei为单位的值转换为其他单位的数值",
+        "description": "将给定的以wei为单位的值转换为其他单位的数值",
+        "operationId": "placeOrder",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "wei是最小的以太单位，应当总是使用wei进行计算，仅在需要显示 时进行转换",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/fromWeiInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/fromWeiOutput"
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/transaction/getConfirmations": {
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "获取交易的确认情况必须等待12个块确认后，才能真正确认这个交易是否成功",
+        "description": "获取交易的确认情况",
+        "operationId": "getConfirmations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "address name not null",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/getConfirmationsInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/getConfirmationsOutput"
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/transaction/getTransaction": {
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "获取交易详细信息",
+        "description": "获取交易详细信息",
+        "operationId": "getConfirmations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "address name not null",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/getConfirmationsInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/getTransactionOutput"
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid status value"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/transaction/getTransactions": {
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "查询交易信息列表",
+        "description": "查询交易信息列表",
+        "operationId": "getTransactions",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "name not null,",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/getTransactionsInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/getTransactionsOutput"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/transaction/getTransactionReceipt": {
+      "post": {
+        "tags": [
+          "Transaction"
+        ],
+        "summary": "获取交易回执的信息",
+        "description": "获取交易回执的信息",
+        "operationId": "getConfirmations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "address name not null",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/getConfirmationsInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/getTransactionReceiptOutput"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/block/getBlockNumber": {
+      "post": {
+        "tags": [
+          "Block"
+        ],
+        "summary": "获取当前区块上最新的区块ID",
+        "description": "获取当前区块上最新的区块ID",
+        "operationId": "getConfirmations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/getBlockNumberOutput"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/block/getBlock": {
+      "post": {
+        "tags": [
+          "Block"
+        ],
+        "summary": "通过区块id获取当前区块的信息",
+        "description": "获取交易的确认情况",
+        "operationId": "getConfirmations",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "通过区块id获取当前区块的信息",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/getBlockInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/getBlockOutput"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    },
+    "/block/getBlocks": {
+      "post": {
+        "tags": [
+          "Block"
+        ],
+        "summary": "通过区块number获取指定范围的区块信息",
+        "description": "通过区块number获取指定范围的区块信息",
+        "operationId": "getBlocks",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "address name not null",
+            "paramType": "form",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/getBlocksInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/getBlocksOutput"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "petstore_auth": [
+              "write:pets",
+              "read:pets"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "petstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:pets": "modify pets in your account",
+        "read:pets": "read your pets"
+      }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "Out": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息"
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "OutDetail": {
+      "type": "object",
+      "properties": {}
+    },
+    "transInfo": {
+      "type": "object",
+      "properties": {
+        "blockHash": {
+          "type": "string",
+          "description": "交易的发起者在之前进行过的交易数量;"
+        },
+        "blockNumber": {
+          "type": "string",
+          "description": "交易所在区块的块号"
+        },
+        "from": {
+          "type": "string",
+          "description": "交易发起者的地址"
+        },
+        "gas": {
+          "type": "string",
+          "description": "交易发起者提供的gas"
+        },
+        "gasPrice": {
+          "type": "string",
+          "description": "交易发起者配置的gas价格，单位是wei;"
+        },
+        "hash": {
+          "type": "string",
+          "description": "32字节，交易的哈希值"
+        },
+        "input": {
+          "type": "string",
+          "description": "交易附带的数据"
+        },
+        "nonce": {
+          "type": "string",
+          "description": "交易的发起者在之前进行过的交易数量"
+        },
+        "to": {
+          "type": "string",
+          "description": "20字节，交易接收者的地址"
+        },
+        "transactionIndex": {
+          "type": "number",
+          "description": "交易在区块里面的序号，整数"
+        },
+        "value": {
+          "type": "string",
+          "description": "交易携带的货币量，以wei为单位。如果合约创建交易，则为初始的基金"
+        },
+        "v": {
+          "type": "string",
+          "description": "未知意思"
+        },
+        "r": {
+          "type": "string",
+          "description": "未知意思"
+        },
+        "s": {
+          "type": "string",
+          "description": "未知意思"
+        }
+      }
+    },
+    "blockInfo": {
+      "type": "object",
+      "properties": {
+        "difficulty": {
+          "type": "string",
+          "description": "当前块的难度，整数"
+        },
+        "extraData": {
+          "type": "string",
+          "description": "当前块的extra data字段"
+        },
+        "gasLimit": {
+          "type": "string",
+          "description": "当前区块允许使用的最大gas"
+        },
+        "gasUsed": {
+          "type": "string",
+          "description": "当前区块累计使用的总的gas"
+        },
+        "hash": {
+          "type": "string",
+          "description": "字符串，区块的哈希串;"
+        },
+        "logsBloom": {
+          "type": "string",
+          "description": "字符串，区块日志的布隆过滤器"
+        },
+        "miner": {
+          "type": "string",
+          "description": "字符串，20字节"
+        },
+        "mixHash": {
+          "type": "string",
+          "description": "未知意思"
+        },
+        "nonce": {
+          "type": "string",
+          "description": "字符串，8字节。POW生成的哈希"
+        },
+        "number": {
+          "type": "number",
+          "description": "区块号"
+        },
+        "parentHash": {
+          "type": "string",
+          "description": "字符串，32字节的父区块的哈希值"
+        },
+        "receiptsRoot": {
+          "type": "string",
+          "description": "未知意思"
+        },
+        "sha3Uncles": {
+          "type": "string",
+          "description": "字符串，32字节。叔区块的哈希值"
+        },
+        "size": {
+          "type": "string",
+          "description": "当前这个块的字节大小"
+        },
+        "stateRoot": {
+          "type": "string",
+          "description": "字符串，32字节"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "区块打包时的unix时间戳"
+        },
+        "totalDifficulty": {
+          "type": "string",
+          "description": "BigNumber类型"
+        },
+        "transactions": {
+          "type": "string",
+          "description": "数组。交易对象。或者是32字节的交易哈希"
+        },
+        "transactionsRoot": {
+          "type": "string",
+          "description": "字符串，32字节，区块的交易前缀树的根"
+        },
+        "uncles": {
+          "type": "string",
+          "description": "叔哈希的数组"
+        }
+      }
+    },
+    "newAccountInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "password": {
+                      "type": "string",
+                      "description": "password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "newAccountOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "生成的账户地址"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getBalanceInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getBalanceOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "balance": {
+                      "type": "string",
+                      "description": "余额，需要转成ether的显示;"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getContractBalanceInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "description": "youy address"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "your contrat name"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getContractBalanceOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "balance": {
+                      "type": "string",
+                      "description": "账户余额用wei为单位，所以在显示的时候需要转成ether"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "fromWeiInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "number": {
+                      "type": "string",
+                      "description": "String|Number|BN: wei为单位的数值"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "description": "可选，默认值为ether"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "fromWeiOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "value": {
+                      "type": "string",
+                      "description": "交易附带的货币量，单位为Wei;"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sendSysTransactionInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "代币符号 NOT NUll "
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "目标账户地址ether"
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "一定是已wei为单位的int(256)例如要发送一个代币那么就是1000000000000000000"
+                    },
+                    "gas": {
+                      "type": "number",
+                      "description": "可选，默认值为50000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sendSysTransactionOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "blockHash": {
+                      "type": "string",
+                      "description": "交易所在区块的哈希值;"
+                    },
+                    "blockNumber": {
+                      "type": "string",
+                      "description": "交易所在区块的块号"
+                    },
+                    "transactionHash": {
+                      "type": "string",
+                      "description": "交易在区块中的序号;"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sendTransactionInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "代币符号 NOT NUll "
+                    },
+                    "from": {
+                      "type": "string",
+                      "description": "发送账户"
+                    },
+                    "password": {
+                      "type": "string",
+                      "description": "发送账户密钥"
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "目标账户地址ether"
+                    },
+                    "amount": {
+                      "type": "number",
+                      "description": "一定是已wei为单位的int(256)例如要发送一个代币那么就是1000000000000000000"
+                    },
+                    "gas": {
+                      "type": "number",
+                      "description": "可选，默认值为50000"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "sendTransactionOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "blockHash": {
+                      "type": "string",
+                      "description": "交易所在区块的哈希值;"
+                    },
+                    "blockNumber": {
+                      "type": "string",
+                      "description": "交易所在区块的块号"
+                    },
+                    "transactionHash": {
+                      "type": "string",
+                      "description": "交易在区块中的序号;"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getBlockNumberOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "currentBlock": {
+                      "type": "number",
+                      "description": "返回当前最新的区块number;"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getConfirmationsInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "transactionHash": {
+                      "type": "string",
+                      "description": "transactionHash NOT NUll "
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getConfirmationsOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "number": {
+                      "type": "string",
+                      "description": "交易的发起者在之前进行过的交易数量;"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getTransactionReceiptOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "blockHash": {
+                      "type": "string",
+                      "description": "32字节 - 日志所在块的哈希;"
+                    },
+                    "blockNumber": {
+                      "type": "number",
+                      "description": "日志所在块的块号;"
+                    },
+                    "contractAddress": {
+                      "type": "string",
+                      "description": "20字节，创建的合约地址;"
+                    },
+                    "cumulativeGasUsed": {
+                      "type": "string",
+                      "description": "当前交易执行后累计花费的gas总值;"
+                    },
+                    "from": {
+                      "type": "string",
+                      "description": "20字节，交易发送者的地址;"
+                    },
+                    "gasUsed": {
+                      "type": "string",
+                      "description": "执行当前这个交易单独花费的gas"
+                    },
+                    "logs": {
+                      "type": "string",
+                      "description": "这个交易产生的日志对象数组;"
+                    },
+                    "logsBloom": {
+                      "type": "string",
+                      "description": "字符串，区块日志的布隆过滤器"
+                    },
+                    "root": {
+                      "type": "string",
+                      "description": "未知意思"
+                    },
+                    "to": {
+                      "type": "string",
+                      "description": "交易接收者的地址"
+                    },
+                    "transactionHash": {
+                      "type": "string",
+                      "description": "交易的哈希值"
+                    },
+                    "transactionIndex": {
+                      "type": "string",
+                      "description": "交易在区块里面的序号，整数;"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getTransactionOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "$ref": "#/definitions/transInfo"
+                },
+                "detail": {
+                  "type": "array",
+                  "description": "返回的多条明细信息",
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getTransactionsInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "代币名称"
+                    },
+                    "transactionHash": {
+                      "type": "string",
+                      "description": "可以是一个地址，也可以是一个交易的Hash "
+                    },
+                    "limit": {
+                      "type": "number",
+                      "description": "分页 "
+                    },
+                    "offset": {
+                      "type": "number",
+                      "description": "分页"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getTransactionsOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "total": {
+                      "type": "string",
+                      "description": "区块链到当前块的总难度，整数"
+                    }
+                  }
+                },
+                "detail": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/transInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getBlockInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "blockNumber": {
+                      "type": "number",
+                      "description": "blockNumber NOT NUll "
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getBlockOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "$ref": "#/definitions/transInfo"
+                },
+                "detail": {
+                  "items": {
+                    "$ref": "#/definitions/OutDetail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getBlocksInput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "properties": {
+                    "minBlock": {
+                      "type": "number",
+                      "description": "blockNumber NOT NUll "
+                    },
+                    "maxBlock": {
+                      "type": "number",
+                      "description": "如果为空,默认从最后一个区块开始查询，maxBlock-minBlock必须小于31 "
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getBlocksOutput": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "head": {
+              "type": "object",
+              "properties": {
+                "ret": {
+                  "type": "string",
+                  "description": "0 成功 其他失败"
+                },
+                "remes": {
+                  "type": "string",
+                  "description": "如果失败了，返回失败的具体内容"
+                }
+              }
+            },
+            "msg": {
+              "type": "object",
+              "properties": {
+                "head": {
+                  "type": "object",
+                  "description": "返回具体的数据头信息",
+                  "properties": {
+                    "total": {
+                      "type": "string",
+                      "description": "区块链到当前块的总难度，整数"
+                    }
+                  }
+                },
+                "detail": {
+                  "type":"array",
+                  "items": {
+                    "$ref": "#/definitions/transInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
+
